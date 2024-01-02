@@ -9,3 +9,44 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  password String
+  monitor Boolean
+  professor Boolean
+  cadeiras String[]
+  avaliacaoPendente Boolean
+  ultimaAulaId String
+  ultimaAulaMonitor String
+  active Boolean
+  createdAt DateTime @default(now())
+}
+
+model Professor {
+  id String @id @default(uuid())
+  token String @unique
+  monitoresId String[]
+}
+
+model Monitor {
+  id String @id @default(uuid())
+  tokenProfessor String @unique
+  idCadeira String
+  nota Float
+  totalDeAvaliacoes Int
+  badges String[]
+}
+
+model Monitoria{
+  id String @id @default(uuid())
+  idMonitor String
+  cadeiraName String
+  horarioInicio DateTime
+  horarioFim DateTime
+  alunosCadastrados Int
+  sala String
+  obs String
+}
