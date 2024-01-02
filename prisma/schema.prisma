@@ -15,38 +15,53 @@ model User {
   name String
   email String @unique
   password String
-  monitor Boolean
-  professor Boolean
-  cadeiras String[]
+  isMonitor Boolean
+  isProfessor Boolean
+  cadeiras String
   avaliacaoPendente Boolean
   ultimaAulaId String
   ultimaAulaMonitor String
   active Boolean
   createdAt DateTime @default(now())
+
+  @@map("users")
+  monitor Monitor?
+  professor Professor?
 }
 
 model Professor {
-  id String @id @default(uuid())
+  id String @id 
   token String @unique
   monitoresId String[]
+  user User @relation(fields: [id],references: [id])
+
 }
 
 model Monitor {
-  id String @id @default(uuid())
+  id String @id
   tokenProfessor String @unique
   idCadeira String
   nota Float
   totalDeAvaliacoes Int
   badges String[]
+
+  user User @relation(fields: [id],references: [id])
+
+  @@map("monitors")
+
+  monitorias Monitoria?
+
 }
 
 model Monitoria{
   id String @id @default(uuid())
-  idMonitor String
+  idMonitor String @unique
   cadeiraName String
   horarioInicio DateTime
   horarioFim DateTime
   alunosCadastrados Int
   sala String
   obs String
-}
+  @@map("monitorias")
+  monitor Monitor @relation(fields: [idMonitor], references: [id])
+  }
