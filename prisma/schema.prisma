@@ -17,11 +17,11 @@ model User {
   password String
   isMonitor Boolean
   isProfessor Boolean
-  cadeiras String
-  avaliacaoPendente Boolean
-  ultimaAulaId String
-  ultimaAulaMonitor String
-  active Boolean
+  cadeiras String?
+  avaliacaoPendente Boolean @default(false)
+  ultimaAulaId String?
+  ultimaAulaMonitor String?
+  active Boolean @default(false)
   createdAt DateTime @default(now())
 
   @@map("users")
@@ -30,10 +30,11 @@ model User {
 }
 
 model Professor {
-  id String @id 
+  id String @id @unique
   token String @unique
-  monitoresId String[]
+  monitoresId String[] @default([])
   user User @relation(fields: [id],references: [id])
+  @@map("professors")
 
 }
 
@@ -41,9 +42,9 @@ model Monitor {
   id String @id
   tokenProfessor String @unique
   idCadeira String
-  nota Float
-  totalDeAvaliacoes Int
-  badges String[]
+  nota Float @default(10)
+  totalDeAvaliacoes Int @default(0)
+  badges String?
 
   user User @relation(fields: [id],references: [id])
 
@@ -59,9 +60,9 @@ model Monitoria{
   cadeiraName String
   horarioInicio DateTime
   horarioFim DateTime
-  alunosCadastrados Int
+  alunosCadastrados Int @default(0)
   sala String
-  obs String
+  obs String?
   @@map("monitorias")
   monitor Monitor @relation(fields: [idMonitor], references: [id])
   }
