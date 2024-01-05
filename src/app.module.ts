@@ -8,6 +8,8 @@ import { MailerService } from './mailer/mailer.service';
 import { MailerModule } from './mailer/mailer.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { MonitoriaService } from './monitoria/monitoria.service';
+import { MonitoriaModule } from './monitoria/monitoria.module';
 
 @Module({
   imports: [
@@ -16,8 +18,9 @@ import { JwtService } from '@nestjs/jwt';
     }),
     AuthModule,
     MailerModule,
+    MonitoriaModule,
   ],
   controllers: [AppController, AuthController],
-  providers: [AppService, AuthService, MailerService, JwtService],
+  providers: [AppService, AuthService, MailerService, JwtService, MonitoriaService],
 })
 export class AppModule {}
