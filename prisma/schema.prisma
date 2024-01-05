@@ -40,7 +40,7 @@ model Professor {
 
 model Monitor {
   id String @id
-  tokenProfessor String @unique
+  tokenProfessor String
   idCadeira String
   nota Float @default(10)
   totalDeAvaliacoes Int @default(0)
