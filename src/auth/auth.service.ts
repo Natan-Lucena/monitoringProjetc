@@ -26,6 +26,14 @@ export class AuthService {
   }: CreateUserDTO) {
     const hash = await argon.hash(password);
     try {
+      if (isMonitor) {
+        const tokenExists = await this.prisma.professor.findFirst({
+          where: { token },
+        });
+        if (!tokenExists) {
+          throw new ForbiddenException('Professor token does not exists');
+        }
+      }
       const user = await this.prisma.user.create({
         data: { email, password: hash, name, isMonitor, isProfessor },
       });
@@ -42,12 +50,6 @@ export class AuthService {
         return { user, professor };
       }
       if (isMonitor) {
-        const tokenExists = await this.prisma.professor.findFirst({
-          where: { token },
-        });
-        if (!tokenExists) {
-          throw new ForbiddenException('Professor token does not exists');
-        }
         const monitor = await this.prisma.monitor.create({
           data: { id: user.id, tokenProfessor: token, idCadeira: '' },
         });
