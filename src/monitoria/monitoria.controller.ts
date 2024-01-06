@@ -1,7 +1,15 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { MonitoriaService } from './monitoria.service';
 import { GetUser } from 'src/auth/decorator';
-import { CreateMonitoriaDTO } from './dtos';
+import { CreateMonitoriaDTO, EditMonitoriaDTO } from './dtos';
 import { JwtGuard } from 'src/auth/guard';
 
 @Controller('monitoria')
@@ -20,5 +28,14 @@ export class MonitoriaController {
   @Get('get')
   getMonitoriasByCadeiras(@GetUser('cadeiras') cadeiras: string[]) {
     return this.monitoriaService.getMonitoriasByCadeiras(cadeiras);
+  }
+
+  @Patch('edit/:id')
+  edtiMonitoriaById(
+    @GetUser('id') userId: string,
+    @Param('id') monitoriaId: string,
+    @Body() dto: EditMonitoriaDTO,
+  ) {
+    return this.monitoriaService.editMonitoriaById(userId, monitoriaId, dto);
   }
 }

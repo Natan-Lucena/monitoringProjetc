@@ -1,6 +1,7 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateMonitoriaDTO } from './dtos';
+import { EditMonitoriaDTO } from './dtos/EditMonitoria.dto';
 
 @Injectable()
 export class MonitoriaService {
@@ -33,5 +34,27 @@ export class MonitoriaService {
       }
     }
     return value.flat();
+  }
+
+  async editMonitoriaById(
+    idMonitor: string,
+    idMonitoria: string,
+    dto: EditMonitoriaDTO,
+  ) {
+    const user = await this.prisma.user.findFirst({
+      where: { id: idMonitor },
+    });
+    if (!user.isMonitor) {
+      throw new ForbiddenException('User is not a monitor');
+    }
+
+    const monitoria = await this.prisma.monitoria.update({
+      where: {
+        id: idMonitoria,
+        idMonitor,
+      },
+      data: { ...dto },
+    });
+    return monitoria;
   }
 }
