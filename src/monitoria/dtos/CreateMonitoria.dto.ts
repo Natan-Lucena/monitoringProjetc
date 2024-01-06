@@ -21,4 +21,7 @@ export class CreateMonitoriaDTO {
   @IsString()
   @IsOptional()
   obs?: string;
+  @IsString()
+  @IsNotEmpty()
+  idCadeira: string;
 }

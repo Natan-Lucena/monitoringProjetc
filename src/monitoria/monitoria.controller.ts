@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { MonitoriaService } from './monitoria.service';
 import { GetUser } from 'src/auth/decorator';
 import { CreateMonitoriaDTO } from './dtos';
@@ -15,5 +15,10 @@ export class MonitoriaController {
     @Body() dto: CreateMonitoriaDTO,
   ) {
     return this.monitoriaService.createMonitoria(userId, dto);
+  }
+
+  @Get('get')
+  getMonitoriasByCadeiras(@GetUser('cadeiras') cadeiras: string[]) {
+    return this.monitoriaService.getMonitoriasByCadeiras(cadeiras);
   }
 }
