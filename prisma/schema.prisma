@@ -17,7 +17,7 @@ model User {
   password String
   isMonitor Boolean
   isProfessor Boolean
-  cadeiras String?
+  cadeiras String[] @default([])
   avaliacaoPendente Boolean @default(false)
   ultimaAulaId String?
   ultimaAulaMonitor String?
@@ -50,13 +50,14 @@ model Monitor {
 
   @@map("monitors")
 
-  monitorias Monitoria?
+  monitorias Monitoria[]
 
 }
 
 model Monitoria{
   id String @id @default(uuid())
-  idMonitor String @unique
+  idMonitor String
+  idCadeira String @default("id")
   cadeiraName String
   horarioInicio DateTime
   horarioFim DateTime
