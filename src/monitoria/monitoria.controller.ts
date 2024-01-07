@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -37,5 +38,13 @@ export class MonitoriaController {
     @Body() dto: EditMonitoriaDTO,
   ) {
     return this.monitoriaService.editMonitoriaById(userId, monitoriaId, dto);
+  }
+
+  @Delete('delete/:id')
+  deleteMonitoriaById(
+    @GetUser('id') userId: string,
+    @Param('id') monitoriaId: string,
+  ) {
+    return this.monitoriaService.deleteMonitoriaById(userId, monitoriaId);
   }
 }

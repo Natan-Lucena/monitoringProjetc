@@ -57,4 +57,18 @@ export class MonitoriaService {
     });
     return monitoria;
   }
+
+  async deleteMonitoriaById(idMonitor: string, idMonitoria: string) {
+    const user = await this.prisma.user.findFirst({
+      where: { id: idMonitor },
+    });
+    if (!user.isMonitor) {
+      throw new ForbiddenException('User is not a monitor');
+    }
+    await this.prisma.monitoria.delete({
+      where: {
+        id: idMonitoria,
+      },
+    });
+  }
 }
