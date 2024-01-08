@@ -3,6 +3,7 @@ import { AuthModule } from './auth/auth.module';
 import { MailerModule } from './mailer/mailer.module';
 import { ConfigModule } from '@nestjs/config';
 import { MonitoriaModule } from './monitoria/monitoria.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { MonitoriaModule } from './monitoria/monitoria.module';
     AuthModule,
     MailerModule,
     MonitoriaModule,
+    UserModule,
   ],
 })
 export class AppModule {}
