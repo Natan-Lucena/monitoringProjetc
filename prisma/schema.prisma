@@ -64,6 +64,7 @@ model Monitoria{
   alunosCadastrados Int @default(0)
   sala String
   obs String?
+  idAlunos String[] @default([])
   @@map("monitorias")
   monitor Monitor @relation(fields: [idMonitor], references: [id])
   }
