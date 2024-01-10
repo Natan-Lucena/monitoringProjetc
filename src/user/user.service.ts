@@ -1,10 +1,14 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EvalueteMonitoriaDTO } from './dtos';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private mailer: MailerService,
+  ) {}
 
   async userRegisterOnMonitoria(userId: string, monitoriaId: string) {
     // TO DO: AVISAR AO MONITOR QUEM CONECTOU
