@@ -21,7 +21,15 @@ export class UserService {
     if (monitoria.idAlunos.includes(userId)) {
       throw new ForbiddenException('User is already registed on the Monitoria');
     }
-
+    const monitor = await this.prisma.user.findFirst({
+      where: {
+        id: monitoria.idMonitor,
+      },
+    });
+    await this.mailer.sendEmail({
+      email: monitor.email,
+      body: 'New user on monitoria',
+    });
     const idAlunos = monitoria.idAlunos;
     idAlunos.push(userId);
 
@@ -46,6 +54,15 @@ export class UserService {
     if (!monitoria.idAlunos.includes(userId)) {
       throw new ForbiddenException('User is not registed on the Monitoria');
     }
+    const monitor = await this.prisma.user.findFirst({
+      where: {
+        id: monitoria.idMonitor,
+      },
+    });
+    await this.mailer.sendEmail({
+      email: monitor.email,
+      body: 'A user has quit the monitoria',
+    });
 
     const idAlunos = monitoria.idAlunos;
     const indexOfAluno = idAlunos.indexOf(userId);
