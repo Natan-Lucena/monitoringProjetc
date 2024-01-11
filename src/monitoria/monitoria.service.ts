@@ -2,10 +2,14 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateMonitoriaDTO } from './dtos';
 import { EditMonitoriaDTO } from './dtos/EditMonitoria.dto';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
 export class MonitoriaService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private mailer: MailerService,
+  ) {}
 
   async createMonitoria(idMonitor: string, dto: CreateMonitoriaDTO) {
     const user = await this.prisma.user.findFirst({
@@ -17,6 +21,18 @@ export class MonitoriaService {
     const monitoria = await this.prisma.monitoria.create({
       data: { idMonitor, ...dto },
     });
+    const users = await this.prisma.user.findMany({
+      where: {
+        cadeiras: { has: monitoria.idCadeira },
+      },
+    });
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+      this.mailer.sendEmail({
+        email: user.email,
+        body: 'A new monitoria has been upload',
+      });
+    }
     return monitoria;
   }
 
