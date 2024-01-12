@@ -72,6 +72,19 @@ export class MonitoriaService {
       data: { ...dto },
     });
 
+    const users = await this.prisma.user.findMany({
+      where: {
+        cadeiras: { has: monitoria.idCadeira },
+      },
+    });
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+      this.mailer.sendEmail({
+        email: user.email,
+        body: 'The monitoria has been updated',
+      });
+    }
+
     return monitoria;
   }
 
