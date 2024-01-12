@@ -107,13 +107,14 @@ export class MonitoriaService {
         id: idMonitoria,
       },
     });
-    const users = await this.prisma.user.findMany({
-      where: {
-        cadeiras: { has: monitoria.idCadeira },
-      },
-    });
-    for (let i = 0; i < users.length; i++) {
-      const user = users[i];
+    const usersId = monitoria.idAlunos;
+    for (let i = 0; i < usersId.length; i++) {
+      const userId = usersId[i];
+      const user = await this.prisma.user.findFirst({
+        where: {
+          id: userId,
+        },
+      });
       this.mailer.sendEmail({
         email: user.email,
         body: 'The monitoria has been deleted',
