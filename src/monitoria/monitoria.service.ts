@@ -71,6 +71,7 @@ export class MonitoriaService {
       },
       data: { ...dto },
     });
+
     return monitoria;
   }
 
@@ -78,13 +79,31 @@ export class MonitoriaService {
     const user = await this.prisma.user.findFirst({
       where: { id: idMonitor },
     });
+    const monitoria = await this.prisma.monitoria.findFirst({
+      where: { id: idMonitoria },
+    });
     if (!user.isMonitor) {
       throw new ForbiddenException('User is not a monitor');
+    }
+    if (!monitoria) {
+      throw new ForbiddenException('Monitoria does not exists');
     }
     await this.prisma.monitoria.delete({
       where: {
         id: idMonitoria,
       },
     });
+    const users = await this.prisma.user.findMany({
+      where: {
+        cadeiras: { has: monitoria.idCadeira },
+      },
+    });
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+      this.mailer.sendEmail({
+        email: user.email,
+        body: 'The monitoria has been deleted',
+      });
+    }
   }
 }
