@@ -70,6 +70,9 @@ export class AuthService {
     if (!user) {
       throw new ForbiddenException('Credentials incorrect');
     }
+    if (!user.active) {
+      throw new ForbiddenException('User not activated yet');
+    }
     const passwordMatch = await argon.verify(user.password, password);
     if (!passwordMatch) {
       throw new ForbiddenException('Credentials incorrect');
