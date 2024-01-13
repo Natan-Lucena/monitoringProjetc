@@ -33,4 +33,8 @@ export class AuthController {
   mailToChangePassword(@Body() dto: ForgetPasswordDTO) {
     return this.authService.mailToChangePassword(dto);
   }
+  @Patch('forgetPassword')
+  changePassword(@Body() dto: ForgetPasswordDTO) {
+    return this.authService.changePassword(dto);
+  }
 }
