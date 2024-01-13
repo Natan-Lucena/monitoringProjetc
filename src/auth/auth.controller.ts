@@ -8,7 +8,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthDTO, CreateUserDTO } from './dtos';
+import { AuthDTO, CreateUserDTO, ForgetPasswordDTO } from './dtos';
 
 @Controller('auth')
 export class AuthController {
@@ -27,5 +27,10 @@ export class AuthController {
   @Patch('authenticate/:id')
   async authenticateUser(@Param('id') userId) {
     await this.authService.authenticateUser(userId);
+  }
+  @HttpCode(HttpStatus.OK)
+  @Post('forgetPassword')
+  mailToChangePassword(@Body() dto: ForgetPasswordDTO) {
+    return this.authService.mailToChangePassword(dto);
   }
 }
