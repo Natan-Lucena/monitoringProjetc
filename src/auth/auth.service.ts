@@ -108,4 +108,19 @@ export class AuthService {
       body: 'Did you forget your password?',
     });
   }
+
+  async changePassword({ email, password }: ForgetPasswordDTO) {
+    const user = await this.prisma.user.findFirst({ where: { email } });
+    const passwordMatch = await argon.verify(user.password, password);
+    if (passwordMatch) {
+      throw new ForbiddenException('The password cannot be the same');
+    }
+    const hash = await argon.hash(password);
+    return this.prisma.user.update({
+      where: { email },
+      data: {
+        password: hash,
+      },
+    });
+  }
 }
