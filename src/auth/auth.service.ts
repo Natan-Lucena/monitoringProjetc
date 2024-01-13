@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from './../prisma/prisma.service';
-import { AuthDTO, CreateUserDTO } from './dtos';
+import { AuthDTO, CreateUserDTO, ForgetPasswordDTO } from './dtos';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
@@ -95,5 +95,17 @@ export class AuthService {
 
   async authenticateUser(id: string) {
     await this.prisma.user.update({ where: { id }, data: { active: true } });
+  }
+  async mailToChangePassword({ email }: ForgetPasswordDTO) {
+    const user = await this.prisma.user.findFirst({
+      where: { email },
+    });
+    if (!user) {
+      throw new ForbiddenException('User does not exists');
+    }
+    await this.mailer.sendEmail({
+      email,
+      body: 'Did you forget your password?',
+    });
   }
 }
