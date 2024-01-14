@@ -37,8 +37,13 @@ export class UserController {
     return this.userService.userEvaluetesMonitor(dto);
   }
 
-  @Patch('addCadeira')
+  @Patch('cadeira')
   userAddCadeira(@GetUser('id') userId: string, @Body() { cadeiraId }) {
     return this.userService.userAddCadeira(userId, cadeiraId);
+  }
+
+  @Delete('cadeira')
+  userRemoveCadeira(@GetUser('id') userId: string, @Body() { cadeiraId }) {
+    return this.userService.userRemoveCadeira(userId, cadeiraId);
   }
 }
