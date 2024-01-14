@@ -36,4 +36,9 @@ export class UserController {
   userEvaluetesMonitor(@Body() dto: EvalueteMonitoriaDTO) {
     return this.userService.userEvaluetesMonitor(dto);
   }
+
+  @Patch('addCadeira')
+  userAddCadeira(@GetUser('id') userId: string, @Body() { cadeiraId }) {
+    return this.userService.userAddCadeira(userId, cadeiraId);
+  }
 }

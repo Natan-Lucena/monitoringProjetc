@@ -110,4 +110,14 @@ export class UserService {
       },
     });
   }
+
+  async userAddCadeira(userId: string, cadeiraId: string) {
+    const user = await this.prisma.user.findFirst({ where: { id: userId } });
+    const cadeiras = user.cadeiras;
+    cadeiras.push(cadeiraId);
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { cadeiras },
+    });
+  }
 }
