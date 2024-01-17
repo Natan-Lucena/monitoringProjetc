@@ -3,12 +3,14 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateMonitoriaDTO } from './dtos';
 import { EditMonitoriaDTO } from './dtos/EditMonitoria.dto';
 import { MailerService } from 'src/mailer/mailer.service';
+import { DateProviderService } from 'src/date-provider/date-provider.service';
 
 @Injectable()
 export class MonitoriaService {
   constructor(
     private prisma: PrismaService,
     private mailer: MailerService,
+    private dateProvider: DateProviderService,
   ) {}
 
   async createMonitoria(idMonitor: string, dto: CreateMonitoriaDTO) {
@@ -17,6 +19,12 @@ export class MonitoriaService {
     });
     if (!user.isMonitor) {
       throw new ForbiddenException('User is not a monitor');
+    }
+    const startTime = dto.horarioInicio.toString();
+    const nowDate = this.dateProvider.nowDate();
+    const daysDiference = this.dateProvider.daysDiffData(startTime, nowDate);
+    if (daysDiference > 0) {
+      throw new ForbiddenException('Invalid date, check now date');
     }
     const monitoria = await this.prisma.monitoria.create({
       data: { idMonitor, ...dto },
