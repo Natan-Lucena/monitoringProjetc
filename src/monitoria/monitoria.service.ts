@@ -71,6 +71,12 @@ export class MonitoriaService {
     if (!user.isMonitor) {
       throw new ForbiddenException('User is not a monitor');
     }
+    const startTime = dto.horarioInicio.toString();
+    const nowDate = this.dateProvider.nowDate();
+    const daysDiference = this.dateProvider.daysDiffData(startTime, nowDate);
+    if (daysDiference > 0) {
+      throw new ForbiddenException('Invalid date, check now date');
+    }
 
     const monitoria = await this.prisma.monitoria.update({
       where: {
