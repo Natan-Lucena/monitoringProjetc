@@ -29,35 +29,28 @@ export class MonitoriaService {
     const monitoria = await this.prisma.monitoria.create({
       data: { idMonitor, ...dto },
     });
-    const users = await this.prisma.user.findMany({
+    const usersCadastrados = await this.prisma.cadeira.findUnique({
       where: {
-        cadeiras: { has: monitoria.idCadeira },
+        id: dto.idCadeira,
+      },
+      select: {
+        cadeirasCadastradas: { select: { user: { select: { email: true } } } },
       },
     });
-    for (let i = 0; i < users.length; i++) {
-      const user = users[i];
-      this.mailer.sendEmail({
-        email: user.email,
-        body: 'A new monitoria has been upload',
+    usersCadastrados.cadeirasCadastradas.map(async (user) => {
+      await this.mailer.sendEmail({
+        email: user.user.email,
+        body: 'A new monitoria has been created',
       });
-    }
+    });
     return monitoria;
   }
 
   async getMonitoriasByCadeiras(cadeiras: string[]) {
-    const value = [];
-    for (let i = 0; i < cadeiras.length; i++) {
-      const monitorias = await this.prisma.monitoria.findMany({
-        where: {
-          idCadeira: cadeiras[i],
-        },
-      });
-      const monitoriaExists = monitorias[0];
-      if (monitoriaExists) {
-        value.push(monitorias);
-      }
-    }
-    return value.flat();
+    return await this.prisma.cadeira.findMany({
+      where: { id: { in: cadeiras } },
+      select: { monitorias: true },
+    });
   }
 
   async editMonitoriaById(
