@@ -112,29 +112,25 @@ export class UserService {
   }
 
   async userAddCadeira(userId: string, cadeiraId: string) {
-    const user = await this.prisma.user.findFirst({ where: { id: userId } });
-    const cadeiras = user.cadeiras;
-    if (cadeiras.includes(cadeiraId)) {
-      throw new ForbiddenException('User already have this cadeira');
-    }
-    cadeiras.push(cadeiraId);
-    return this.prisma.user.update({
-      where: { id: userId },
-      data: { cadeiras },
+    const userHasCadeira = await this.prisma.cadeiraCadastrada.findMany({
+      where: { userId },
     });
+    userHasCadeira.map((cadeira) => {
+      if (cadeira.cadeiraId === cadeiraId) {
+        throw new ForbiddenException('User already have this cadeira');
+      }
+    });
+    await this.prisma.cadeiraCadastrada.create({ data: { userId, cadeiraId } });
   }
   async userRemoveCadeira(userId: string, cadeiraId: string) {
-    const user = await this.prisma.user.findFirst({ where: { id: userId } });
-    const cadeiras = user.cadeiras;
-    if (!cadeiras.includes(cadeiraId)) {
+    const cadeiraExists = await this.prisma.cadeiraCadastrada.findFirst({
+      where: { userId, cadeiraId },
+    });
+    if (!cadeiraExists) {
       throw new ForbiddenException('User does not have this cadeira');
     }
-
-    const indexOfCadeira = cadeiras.indexOf(cadeiraId);
-    cadeiras.splice(indexOfCadeira, 1);
-    return this.prisma.user.update({
-      where: { id: userId },
-      data: { cadeiras },
+    await this.prisma.cadeiraCadastrada.deleteMany({
+      where: { userId, cadeiraId },
     });
   }
 }
