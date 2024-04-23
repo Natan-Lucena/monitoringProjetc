@@ -29,35 +29,28 @@ export class MonitoriaService {
     const monitoria = await this.prisma.monitoria.create({
       data: { idMonitor, ...dto },
     });
-    const users = await this.prisma.user.findMany({
+    const usersCadastrados = await this.prisma.cadeira.findUnique({
       where: {
-        cadeiras: { has: monitoria.idCadeira },
+        id: dto.idCadeira,
+      },
+      select: {
+        cadeirasCadastradas: { select: { user: { select: { email: true } } } },
       },
     });
-    for (let i = 0; i < users.length; i++) {
-      const user = users[i];
-      this.mailer.sendEmail({
-        email: user.email,
-        body: 'A new monitoria has been upload',
+    usersCadastrados.cadeirasCadastradas.map(async (user) => {
+      await this.mailer.sendEmail({
+        email: user.user.email,
+        body: 'A new monitoria has been created',
       });
-    }
+    });
     return monitoria;
   }
 
   async getMonitoriasByCadeiras(cadeiras: string[]) {
-    const value = [];
-    for (let i = 0; i < cadeiras.length; i++) {
-      const monitorias = await this.prisma.monitoria.findMany({
-        where: {
-          idCadeira: cadeiras[i],
-        },
-      });
-      const monitoriaExists = monitorias[0];
-      if (monitoriaExists) {
-        value.push(monitorias);
-      }
-    }
-    return value.flat();
+    return await this.prisma.cadeira.findMany({
+      where: { id: { in: cadeiras } },
+      select: { monitorias: true },
+    });
   }
 
   async editMonitoriaById(
@@ -65,11 +58,15 @@ export class MonitoriaService {
     idMonitoria: string,
     dto: EditMonitoriaDTO,
   ) {
-    const user = await this.prisma.user.findFirst({
-      where: { id: idMonitor },
+    const monitoriaExists = await this.prisma.monitoria.findFirst({
+      where: { id: idMonitoria },
+      select: { idMonitor: true },
     });
-    if (!user.isMonitor) {
-      throw new ForbiddenException('User is not a monitor');
+    if (!monitoriaExists) {
+      throw new ForbiddenException('Monitoria does not exists');
+    }
+    if (monitoriaExists.idMonitor !== idMonitor) {
+      throw new ForbiddenException('User is not the monitor of this monitoria');
     }
     const startTime = dto.horarioInicio.toString();
     const nowDate = this.dateProvider.nowDate();
@@ -81,37 +78,33 @@ export class MonitoriaService {
     const monitoria = await this.prisma.monitoria.update({
       where: {
         id: idMonitoria,
-        idMonitor,
       },
       data: { ...dto },
     });
 
     const usersId = monitoria.idAlunos;
-    for (let i = 0; i < usersId.length; i++) {
-      const userId = usersId[i];
-      const user = await this.prisma.user.findFirst({
-        where: {
-          id: userId,
-        },
-      });
-      this.mailer.sendEmail({
+    const users = await this.prisma.user.findMany({
+      where: {
+        id: { in: usersId },
+      },
+    });
+    users.map(async (user) => {
+      await this.mailer.sendEmail({
         email: user.email,
         body: 'The monitoria has been updated',
       });
-    }
+    });
 
     return monitoria;
   }
 
   async deleteMonitoriaById(idMonitor: string, idMonitoria: string) {
-    const user = await this.prisma.user.findFirst({
-      where: { id: idMonitor },
-    });
     const monitoria = await this.prisma.monitoria.findFirst({
       where: { id: idMonitoria },
+      select: { idMonitor: true, idAlunos: true },
     });
-    if (!user.isMonitor) {
-      throw new ForbiddenException('User is not a monitor');
+    if (idMonitor != monitoria.idMonitor) {
+      throw new ForbiddenException('User is not the owner of this monitoria');
     }
     if (!monitoria) {
       throw new ForbiddenException('Monitoria does not exists');
@@ -122,17 +115,16 @@ export class MonitoriaService {
       },
     });
     const usersId = monitoria.idAlunos;
-    for (let i = 0; i < usersId.length; i++) {
-      const userId = usersId[i];
-      const user = await this.prisma.user.findFirst({
-        where: {
-          id: userId,
-        },
-      });
-      this.mailer.sendEmail({
+    const users = await this.prisma.user.findMany({
+      where: {
+        id: { in: usersId },
+      },
+    });
+    users.map(async (user) => {
+      await this.mailer.sendEmail({
         email: user.email,
         body: 'The monitoria has been deleted',
       });
-    }
+    });
   }
 }

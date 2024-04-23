@@ -10,6 +10,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Cadeira {
+  id String @id @default(uuid())
+  name String
+  monitorias Monitoria[]
+  cadeirasCadastradas CadeiraCadastrada[]
+}
+
+model CadeiraCadastrada {
+  id String @id @default(uuid())
+  cadeiraId String
+  userId String
+  @@map("cadeirasCadastradas")
+  user User @relation(fields: [userId], references: [id])
+  cadeira Cadeira @relation(fields: [cadeiraId], references: [id])
+
+}
 model User {
   id String @id @default(uuid())
   name String
@@ -17,12 +33,12 @@ model User {
   password String
   isMonitor Boolean
   isProfessor Boolean
-  cadeiras String[] @default([])
   avaliacaoPendente Boolean @default(false)
   ultimaAulaId String?
   ultimaAulaMonitor String?
   active Boolean @default(false)
   createdAt DateTime @default(now())
+  cadeiras CadeiraCadastrada[]
 
   @@map("users")
   monitor Monitor?
@@ -57,7 +73,7 @@ model Monitor {
 model Monitoria{
   id String @id @default(uuid())
   idMonitor String
-  idCadeira String @default("id")
+  idCadeira String
   cadeiraName String
   horarioInicio DateTime
   horarioFim DateTime
@@ -67,4 +83,5 @@ model Monitoria{
   idAlunos String[] @default([])
   @@map("monitorias")
   monitor Monitor @relation(fields: [idMonitor], references: [id])
+  cadeira Cadeira @relation(fields: [idCadeira], references: [id])
   }
