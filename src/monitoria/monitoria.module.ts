@@ -1,13 +1,19 @@
 import { Module } from '@nestjs/common';
-import { MonitoriaController } from './monitoria.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { MonitoriaService } from './monitoria.service';
 import { MailerService } from 'src/mailer/mailer.service';
 import { DateProviderService } from 'src/date-provider/date-provider.service';
+import { CreateMonitoriaService } from './services/create-monitoria.service';
+import { CreateMonitoriaController } from './controllers/create-monitoria.controller';
+import { GetMonitoriaByCadeirasService } from './services/get-monitoria-by-cadeiras.service';
+import { GetMonitoriasByCadeirasController } from './controllers/get-monitorias-by-cadeiras.controller';
+import { EditMonitoriaByIdService } from './services/edit-monitoria-by-id.service';
+import { EditMonitoriaByIdController } from './controllers/edit-monitoria-by-id.controller';
+import { DeleteMonitoriaByIdService } from './services/delete-monitoria-by-id.service';
+import { DeleteMonitoriaByIdController } from './controllers/delete-monitoria-by-id.controller';
 
 @Module({
   imports: [PrismaModule],
-  controllers: [MonitoriaController],
-  providers: [MonitoriaService, MailerService, DateProviderService],
+  controllers: [CreateMonitoriaController, GetMonitoriasByCadeirasController, EditMonitoriaByIdController, DeleteMonitoriaByIdController],
+  providers: [MailerService, DateProviderService, CreateMonitoriaService, GetMonitoriaByCadeirasService, EditMonitoriaByIdService, DeleteMonitoriaByIdService],
 })
 export class MonitoriaModule {}
