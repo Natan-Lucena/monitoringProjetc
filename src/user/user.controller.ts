@@ -10,7 +10,9 @@ import { JwtGuard } from 'src/auth/guard';
 import { UserService } from './user.service';
 import { GetUser } from 'src/auth/decorator';
 import { EvalueteMonitoriaDTO } from './dtos';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('user')
 @Controller('user')
 @UseGuards(JwtGuard)
 export class UserController {
