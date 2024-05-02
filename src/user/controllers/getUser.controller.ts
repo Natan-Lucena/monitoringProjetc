@@ -2,7 +2,9 @@ import { Controller, Get, UseGuards } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
 import { GetUserService } from '../services/getUser.service';
 import { GetUser } from 'src/auth/decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('user')
 @Controller('user/me')
 @UseGuards(JwtGuard)
 export class GetUserController {
