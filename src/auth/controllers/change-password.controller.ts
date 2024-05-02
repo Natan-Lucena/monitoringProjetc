@@ -5,7 +5,9 @@ import {
   } from '@nestjs/common';
   import { ChangePasswordService } from '../services/change-password.service';
   import { ForgetPasswordDTO } from '../dtos';
+import { ApiTags } from '@nestjs/swagger';
   
+  @ApiTags('auth')
   @Controller('auth')
   export class ChangePasswordController {
     constructor(private changePasswordService: ChangePasswordService) {}

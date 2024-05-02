@@ -4,7 +4,9 @@ import {
     Patch,
   } from '@nestjs/common';
   import { AuthenticateUserService } from '../services/authenticate-user.service';
+import { ApiTags } from '@nestjs/swagger';
   
+  @ApiTags('auth')
   @Controller('auth')
   export class AuthenticateUserController {
     constructor(private authenticateUserService: AuthenticateUserService) {}
