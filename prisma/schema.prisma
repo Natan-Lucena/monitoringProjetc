@@ -45,6 +45,13 @@ model User {
   professor Professor?
 }
 
+model AuthToken {
+  id String @id @default(uuid())
+  token String @unique
+  userId String
+  @@map("authTokens")
+}
+
 model Professor {
   id String @id @unique
   token String @unique
