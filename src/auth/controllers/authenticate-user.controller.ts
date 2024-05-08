@@ -1,4 +1,10 @@
-import { Controller, HttpStatus, Param, Patch, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  HttpStatus,
+  Param,
+  Patch,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthenticateUserService } from '../services/authenticate-user.service';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '../guard';
@@ -11,13 +17,13 @@ export class AuthenticateUserController {
 
   @Patch('authenticate/:id/:token')
   @ApiOperation({ summary: 'Authenticate User' })
-  @ApiParam({ 
-    name: 'id', 
-    description: 'User id' 
+  @ApiParam({
+    name: 'id',
+    description: 'User id',
   })
-  @ApiParam({ 
+  @ApiParam({
     name: 'token',
-    description: 'User authentication token' 
+    description: 'User authentication token',
   })
   @ApiResponse({
     status: HttpStatus.OK,
