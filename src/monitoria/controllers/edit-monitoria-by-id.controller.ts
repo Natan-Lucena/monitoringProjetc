@@ -39,12 +39,12 @@ export class EditMonitoriaByIdController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Id not found or invalid update data',
   })
-  edtiMonitoriaById(
+  async edtiMonitoriaById(
     @GetUser('id') userId: string,
     @Param('id') monitoriaId: string,
     @Body() dto: EditMonitoriaDTO,
   ) {
-    return this.editMonitoriaByIdService.editMonitoriaById(
+    return await this.editMonitoriaByIdService.editMonitoriaById(
       userId,
       monitoriaId,
       dto,

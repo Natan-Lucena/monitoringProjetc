@@ -1,21 +1,24 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateMonitoriaDTO } from '../dtos';
 import { MailerService } from 'src/mailer/mailer.service';
 import { DateProviderService } from 'src/date-provider/date-provider.service';
+import { UserRepository } from 'src/providers/repositories/userRepository';
+import { MonitoriaRepository } from 'src/providers/repositories/monitoriaRepository';
+import { CadeiraRepository } from 'src/providers/repositories/cadeiraRepository';
 
 @Injectable()
 export class CreateMonitoriaService {
   constructor(
-    private prisma: PrismaService,
+    private userRepository: UserRepository,
+    private monitoriaRepository: MonitoriaRepository,
+    private cadeiraRepository: CadeiraRepository,
     private mailer: MailerService,
     private dateProvider: DateProviderService,
   ) {}
 
   async createMonitoria(idMonitor: string, dto: CreateMonitoriaDTO) {
-    const user = await this.prisma.user.findFirst({
-      where: { id: idMonitor },
-    });
+    const user = await this.userRepository.findUserById(idMonitor);
+
     if (!user.isMonitor) {
       throw new ForbiddenException('User is not a monitor');
     }
@@ -25,17 +28,13 @@ export class CreateMonitoriaService {
     if (daysDiference > 0) {
       throw new ForbiddenException('Invalid date, check now date');
     }
-    const monitoria = await this.prisma.monitoria.create({
-      data: { idMonitor, ...dto },
+    const monitoria = await this.monitoriaRepository.createMonitoria({
+      idMonitor,
+      ...dto,
     });
-    const usersCadastrados = await this.prisma.cadeira.findUnique({
-      where: {
-        id: dto.idCadeira,
-      },
-      select: {
-        cadeirasCadastradas: { select: { user: { select: { email: true } } } },
-      },
-    });
+    const usersCadastrados = await this.cadeiraRepository.getUsersByCadeiraId(
+      dto.idCadeira,
+    );
     usersCadastrados.cadeirasCadastradas.map(async (user) => {
       await this.mailer.sendEmail({
         email: user.user.email,
@@ -44,5 +43,4 @@ export class CreateMonitoriaService {
     });
     return monitoria;
   }
-  
 }

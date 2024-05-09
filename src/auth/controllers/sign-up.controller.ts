@@ -1,21 +1,15 @@
-import {
-    Body,
-    Controller,
-    HttpStatus,
-    Post,
-    UseGuards,
-  } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { SignUpService } from '../services/sign-up.service';
 import { CreateUserDTO } from '../dtos';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '../guard';
-  
+
 @ApiTags('auth')
 @Controller('auth')
 @UseGuards(JwtGuard)
 export class SignUpController {
   constructor(private signUpService: SignUpService) {}
-  
+
   @Post('signup')
   @ApiOperation({ summary: 'User Sign-Up' })
   @ApiBody({
@@ -30,7 +24,7 @@ export class SignUpController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Unauthorized: Invalid credentials',
   })
-  signUp(@Body() dto: CreateUserDTO) {
-      return this.signUpService.singUp(dto);
+  async signUp(@Body() dto: CreateUserDTO) {
+    return await this.signUpService.singUp(dto);
   }
 }

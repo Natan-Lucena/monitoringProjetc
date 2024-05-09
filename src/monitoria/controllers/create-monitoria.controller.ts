@@ -25,10 +25,10 @@ export class CreateMonitoriaController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Incorrect data or Monitoring already exists',
   })
-  createMonitoria(
+  async createMonitoria(
     @GetUser('id') userId: string,
     @Body() dto: CreateMonitoriaDTO,
   ) {
-    return this.createMonitoriaService.createMonitoria(userId, dto);
+    return await this.createMonitoriaService.createMonitoria(userId, dto);
   }
 }

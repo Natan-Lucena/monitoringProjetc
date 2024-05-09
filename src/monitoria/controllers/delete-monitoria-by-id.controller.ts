@@ -27,11 +27,11 @@ export class DeleteMonitoriaByIdController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Id not found or monitoring does not exist',
   })
-  deleteMonitoriaById(
+  async deleteMonitoriaById(
     @GetUser('id') userId: string,
     @Param('id') monitoriaId: string,
   ) {
-    return this.deleteMonitoriaByIdService.deleteMonitoriaById(
+    return await this.deleteMonitoriaByIdService.deleteMonitoriaById(
       userId,
       monitoriaId,
     );
