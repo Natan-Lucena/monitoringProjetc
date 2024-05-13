@@ -1,18 +1,18 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthDTO } from '../dtos';
 import * as argon from 'argon2';
 import { SignTokenService } from './sign-token.service';
+import { UserRepository } from 'src/providers/repositories/userRepository';
 
 @Injectable()
 export class SignInService {
   constructor(
-    private prisma: PrismaService,
-    private signTokenservice: SignTokenService
+    private signTokenservice: SignTokenService,
+    private userRepository: UserRepository,
   ) {}
 
   async signIn({ email, password }: AuthDTO) {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+    const user = await this.userRepository.findUniqueUserByEmail(email);
     if (!user) {
       throw new ForbiddenException('Credentials incorrect');
     }

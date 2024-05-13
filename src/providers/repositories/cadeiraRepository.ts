@@ -15,4 +15,11 @@ export class CadeiraRepository {
       },
     });
   }
+
+  async getMonitoriasByCadeiras(cadeiras: string[]){
+    return await this.prisma.cadeira.findMany({
+      where: { id: { in: cadeiras } },
+      select: { monitorias: true },
+    });
+  }
 }
