@@ -9,6 +9,7 @@ import { InfraService } from './infra/infra.service';
 import { InfraModule } from './infra/infra.module';
 import { DateProviderService } from './date-provider/date-provider.service';
 import { DateProviderModule } from './date-provider/date-provider.module';
+import { ProvidersModule } from './providers/providers.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { DateProviderModule } from './date-provider/date-provider.module';
     ScheduleModule.forRoot(),
     InfraModule,
     DateProviderModule,
+    ProvidersModule,
   ],
   providers: [InfraService, DateProviderService],
 })

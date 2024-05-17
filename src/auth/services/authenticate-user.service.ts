@@ -1,27 +1,29 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { AuthTokenRepository } from 'src/providers/repositories/authTokenRepository';
+import { UserRepository } from 'src/providers/repositories/userRepository';
 
 @Injectable()
 export class AuthenticateUserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private userRepository: UserRepository,
+    private authTokenRepository: AuthTokenRepository,
+  ) {}
 
   async authenticateUser(id: string, token: string) {
-    const user = await this.prisma.user.findFirst({ where: { id } });
+    const user = await this.userRepository.findUserById(id);
     if (!user) {
       throw new BadRequestException('User not found');
     }
     if (user.active) {
       throw new BadRequestException('User already active');
     }
-    const tokenExists = await this.prisma.authToken.findFirst({
-      where: { token },
-    });
+    const tokenExists = await this.authTokenRepository.findAuthTokenByToken(token);
     if (!tokenExists) {
       throw new BadRequestException('Invalid Token');
     }
     if (tokenExists.userId !== id) {
       throw new BadRequestException('Invalid Token');
     }
-    await this.prisma.user.update({ where: { id }, data: { active: true } });
+    await this.userRepository.updateUserById(id);
   }
 }

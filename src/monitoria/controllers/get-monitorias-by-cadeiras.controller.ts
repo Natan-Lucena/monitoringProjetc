@@ -22,7 +22,9 @@ export class GetMonitoriasByCadeirasController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Error when viewing monitoring',
   })
-  getMonitoriasByCadeiras(@GetUser('cadeiras') cadeiras: string[]) {
-    return this.getMonitoriaByCadeirasService.getMonitoriasByCadeiras(cadeiras);
+  async getMonitoriasByCadeiras(@GetUser('cadeiras') cadeiras: string[]) {
+    return await this.getMonitoriaByCadeirasService.getMonitoriasByCadeiras(
+      cadeiras,
+    );
   }
 }

@@ -1,15 +1,17 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { EditMonitoriaDTO } from '../dtos';
 import { MailerService } from 'src/mailer/mailer.service';
 import { DateProviderService } from 'src/date-provider/date-provider.service';
+import { MonitoriaRepository } from 'src/providers/repositories/monitoriaRepository';
+import { UserRepository } from 'src/providers/repositories/userRepository';
 
 @Injectable()
 export class EditMonitoriaByIdService {
   constructor(
-    private prisma: PrismaService,
     private mailer: MailerService,
     private dateProvider: DateProviderService,
+    private monitoriaRepository: MonitoriaRepository,
+    private userRepository: UserRepository
   ) {}
 
   async editMonitoriaById(
@@ -17,10 +19,7 @@ export class EditMonitoriaByIdService {
     idMonitoria: string,
     dto: EditMonitoriaDTO,
   ) {
-    const monitoriaExists = await this.prisma.monitoria.findFirst({
-      where: { id: idMonitoria },
-      select: { idMonitor: true },
-    });
+    const monitoriaExists = await this.monitoriaRepository.findMonitoriaById(idMonitoria)
     if (!monitoriaExists) {
       throw new ForbiddenException('Monitoria does not exists');
     }
@@ -34,19 +33,10 @@ export class EditMonitoriaByIdService {
       throw new ForbiddenException('Invalid date, check now date');
     }
 
-    const monitoria = await this.prisma.monitoria.update({
-      where: {
-        id: idMonitoria,
-      },
-      data: { ...dto },
-    });
+    const monitoria = await this.monitoriaRepository.updateMonitoriaById(idMonitoria, dto);
 
     const usersId = monitoria.idAlunos;
-    const users = await this.prisma.user.findMany({
-      where: {
-        id: { in: usersId },
-      },
-    });
+    const users = await this.userRepository.getUsersById(usersId)
     users.map(async (user) => {
       await this.mailer.sendEmail({
         email: user.email,
