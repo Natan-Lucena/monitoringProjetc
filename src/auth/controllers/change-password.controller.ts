@@ -3,13 +3,11 @@ import { ChangePasswordService } from '../services/change-password.service';
 import { ForgetPasswordDTO } from '../dtos';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '../guard';
-
 @ApiTags('auth')
 @Controller('auth')
 @UseGuards(JwtGuard)
 export class ChangePasswordController {
   constructor(private changePasswordService: ChangePasswordService) {}
-
   @Patch('forgetPassword')
   @ApiOperation({ summary: 'Change Password' })
   @ApiBody({

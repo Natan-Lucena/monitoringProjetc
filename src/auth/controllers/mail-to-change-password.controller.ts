@@ -10,7 +10,6 @@ import { MailToChangePasswordService } from '../services/mail-to-change-password
 import { ForgetPasswordDTO } from '../dtos';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '../guard';
-
 @ApiTags('auth')
 @Controller('auth')
 @UseGuards(JwtGuard)

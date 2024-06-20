@@ -3,13 +3,11 @@ import { SignUpService } from '../services/sign-up.service';
 import { CreateUserDTO } from '../dtos';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '../guard';
-
 @ApiTags('auth')
 @Controller('auth')
 @UseGuards(JwtGuard)
 export class SignUpController {
   constructor(private signUpService: SignUpService) {}
-
   @Post('signup')
   @ApiOperation({ summary: 'User Sign-Up' })
   @ApiBody({

@@ -16,7 +16,6 @@ import { JwtGuard } from '../guard';
 @UseGuards(JwtGuard)
 export class SignInController {
   constructor(private signInService: SignInService) {}
-
   @HttpCode(HttpStatus.OK)
   @Post('signin')
   @ApiOperation({ summary: 'User Sign-In' })
