@@ -14,10 +14,14 @@ import { MailToChangePasswordService } from './services/mail-to-change-password.
 import { MailToChangePasswordController } from './controllers/mail-to-change-password.controller';
 import { ChangePasswordService } from './services/change-password.service';
 import { ChangePasswordController } from './controllers/change-password.controller';
+import { AuthTokenRepository } from 'src/providers/repositories/authTokenRepository';
+import { UserRepository } from 'src/providers/repositories/userRepository';
+import { ProfessorRepository } from 'src/providers/repositories/professorRepository';
+import { MonitorRepository } from 'src/providers/repositories/monitorRepository';
 
 @Module({
   imports: [PrismaModule, JwtModule.register({})],
   controllers: [SignUpController, SignInController, AuthenticateUserController, MailToChangePasswordController, ChangePasswordController],
-  providers: [JwtStrategy, MailerService, SignUpService, SignInService, SignTokenService, AuthenticateUserService, MailToChangePasswordService, ChangePasswordService],
+  providers: [MonitorRepository ,ProfessorRepository ,UserRepository ,AuthTokenRepository ,JwtStrategy, MailerService, SignUpService, SignInService, SignTokenService, AuthenticateUserService, MailToChangePasswordService, ChangePasswordService],
 })
 export class AuthModule {}

@@ -1,11 +1,11 @@
 import {
-    Body,
-    Controller,
-    HttpCode,
-    HttpStatus,
-    Post,
-    UseGuards,
-  } from '@nestjs/common';
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { SignInService } from '../services/sign-in.service';
 import { AuthDTO } from '../dtos';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -16,7 +16,6 @@ import { JwtGuard } from '../guard';
 @UseGuards(JwtGuard)
 export class SignInController {
   constructor(private signInService: SignInService) {}
-  
   @HttpCode(HttpStatus.OK)
   @Post('signin')
   @ApiOperation({ summary: 'User Sign-In' })
@@ -32,7 +31,7 @@ export class SignInController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Unauthorized: Invalid credentials',
   })
-  singIn(@Body() dto: AuthDTO) {
-    return this.signInService.signIn(dto);
+  async singIn(@Body() dto: AuthDTO) {
+    return await this.signInService.signIn(dto);
   }
 }

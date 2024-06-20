@@ -1,18 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { CadeiraRepository } from 'src/providers/repositories/cadeiraRepository';
 
 @Injectable()
 export class GetMonitoriaByCadeirasService {
   constructor(
-    private prisma: PrismaService,
+    private cadeiraRepository: CadeiraRepository,
   ) {}
 
-
   async getMonitoriasByCadeiras(cadeiras: string[]) {
-    return await this.prisma.cadeira.findMany({
-      where: { id: { in: cadeiras } },
-      select: { monitorias: true },
-    });
+    return await this.cadeiraRepository.getMonitoriasByCadeiras(cadeiras);
   }
 
 }

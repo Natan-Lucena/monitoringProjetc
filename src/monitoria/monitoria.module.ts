@@ -10,10 +10,28 @@ import { EditMonitoriaByIdService } from './services/edit-monitoria-by-id.servic
 import { EditMonitoriaByIdController } from './controllers/edit-monitoria-by-id.controller';
 import { DeleteMonitoriaByIdService } from './services/delete-monitoria-by-id.service';
 import { DeleteMonitoriaByIdController } from './controllers/delete-monitoria-by-id.controller';
+import { CadeiraRepository } from 'src/providers/repositories/cadeiraRepository';
+import { UserRepository } from 'src/providers/repositories/userRepository';
+import { MonitoriaRepository } from 'src/providers/repositories/monitoriaRepository';
 
 @Module({
   imports: [PrismaModule],
-  controllers: [CreateMonitoriaController, GetMonitoriasByCadeirasController, EditMonitoriaByIdController, DeleteMonitoriaByIdController],
-  providers: [MailerService, DateProviderService, CreateMonitoriaService, GetMonitoriaByCadeirasService, EditMonitoriaByIdService, DeleteMonitoriaByIdService],
+  controllers: [
+    CreateMonitoriaController,
+    GetMonitoriasByCadeirasController,
+    EditMonitoriaByIdController,
+    DeleteMonitoriaByIdController,
+  ],
+  providers: [
+    MonitoriaRepository,
+    UserRepository,
+    CadeiraRepository,
+    MailerService,
+    DateProviderService,
+    CreateMonitoriaService,
+    GetMonitoriaByCadeirasService,
+    EditMonitoriaByIdService,
+    DeleteMonitoriaByIdService,
+  ],
 })
 export class MonitoriaModule {}
