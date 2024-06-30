@@ -1,15 +1,13 @@
-import { Body, Controller, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { SignUpService } from '../services/sign-up.service';
 import { CreateUserDTO } from '../dtos';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { JwtGuard } from '../guard';
 @ApiTags('auth')
 @Controller('auth')
-@UseGuards(JwtGuard)
 export class SignUpController {
   constructor(private signUpService: SignUpService) {}
   @Post('signup')
-  @ApiOperation({ summary: 'User Sign-Up' })
+  @ApiOperation({ summary: 'User Sign-Up route' })
   @ApiBody({
     type: CreateUserDTO,
     description: 'Data required for user sign-up',
