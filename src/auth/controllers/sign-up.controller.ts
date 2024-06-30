@@ -7,7 +7,7 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 export class SignUpController {
   constructor(private signUpService: SignUpService) {}
   @Post('signup')
-  @ApiOperation({ summary: 'User Sign-Up' })
+  @ApiOperation({ summary: 'User Sign-Up route' })
   @ApiBody({
     type: CreateUserDTO,
     description: 'Data required for user sign-up',
