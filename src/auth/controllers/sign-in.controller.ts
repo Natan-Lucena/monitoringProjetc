@@ -1,19 +1,10 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { SignInService } from '../services/sign-in.service';
 import { AuthDTO } from '../dtos';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { JwtGuard } from '../guard';
 
 @ApiTags('auth')
 @Controller('auth')
-@UseGuards(JwtGuard)
 export class SignInController {
   constructor(private signInService: SignInService) {}
   @HttpCode(HttpStatus.OK)
