@@ -1,17 +1,9 @@
-import {
-  Controller,
-  HttpStatus,
-  Param,
-  Patch,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, HttpStatus, Param, Patch } from '@nestjs/common';
 import { AuthenticateUserService } from '../services/authenticate-user.service';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { JwtGuard } from '../guard';
 
 @ApiTags('auth')
 @Controller('auth')
-@UseGuards(JwtGuard)
 export class AuthenticateUserController {
   constructor(private authenticateUserService: AuthenticateUserService) {}
 
